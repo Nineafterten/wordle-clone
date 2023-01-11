@@ -19,7 +19,7 @@ async function init() {
     const apiResult = await fetch('https://words.dev-apis.com/word-of-the-day');
     const wordResponse = await apiResult.json();
     const wordAnswer = wordResponse.word.toUpperCase();
-    console.log('wordResponse', wordResponse);
+    //console.info('wordResponse', wordResponse);
     const wordParts = wordAnswer.split('');
     // stop the loading spinner after we get the response
     handleLoadingDisplay(false);
@@ -27,7 +27,7 @@ async function init() {
     // listen for keypresses
     document.addEventListener('keydown', function handleKeyPress(event) {
         let character = event.key
-        console.log('handle this key:', character);
+        //console.info('handle this key:', character);
         // don't do anything if we are loading or if the game is done
         if (isLoading || finishedGame) {
             return;
@@ -58,7 +58,6 @@ async function init() {
         // update the new box with the letter
         let index = currentRow * config.answerLength + currentGuess.length - 1;
         config.letters[index].innerText = letter;
-        console.log('currentGuess', currentGuess);
     }
 
     // create an array of letters so we can keep track of which letters will be
@@ -96,8 +95,8 @@ async function init() {
             body: JSON.stringify({ word: currentGuess })
         });
         const checkResult = await checkResponse.json();
-        //console.log('validWord', checkResult.validWord);
         handleLoadingDisplay(false);
+        // flag to know if the user won
         let allCorrect;
         // if a valid word, we can do styling for guesses
         if (checkResult.validWord) {
