@@ -18,7 +18,7 @@ async function init() {
     // fetch the word from the api
     const apiResult = await fetch('https://words.dev-apis.com/word-of-the-day');
     const wordAnswer = await apiResult.json();
-    console.log('temp', wordAnswer);
+    console.log('wordAnswer', wordAnswer);
     // stop the loading spinner after we get the response
     handleLoadingDisplay(false);
 
@@ -56,6 +56,15 @@ async function init() {
         // update the new box with the letter
         let index = currentRow * config.answerLength + currentGuess.length - 1;
         config.letters[index].innerText = letter;
+    }
+
+    // let the user know this word wasn't a real one (doesn't count)
+    function markInvalidWord() {
+        for (let i = 0; i < config.answerLength; i++) {
+            config.letters[currentRow * config.answerLength + i].classList.remove("invalid");
+            // long enough for the browser to update the DOM and re-add the class
+            setTimeout(() => config.letters[currentRow * config.answerLength + i].classList.add('invalid'), 0);
+          }
     }
 
     // handle the backspace key when we need to delete a letter
@@ -97,8 +106,13 @@ async function init() {
             method: 'POST',
             body: JSON.stringify({ word: currentGuess })
         });
-        // TODO: make this return a T/F and go on the validation when called
-        console.log('checkResponse', checkResponse);
+        const checkResult = await checkResponse.json();
+        console.log('validWord', checkResult.validWord);
+        // if it's invalid, do the styling updates
+        if (!checkResult.validWord) {
+            markInvalidWord();
+            return;
+        }
     }
 
 } 
