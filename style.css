@@ -66,21 +66,38 @@
     justify-content: center;
 }
 
+.wrong {
+    background-color: lightgray;
+    border-color: dimgray;
+}
+
+.close {
+    background-color: antiquewhite;
+    border-color: goldenrod
+}
+
+.correct {
+    background-color: aquamarine;
+    border-color: forestgreen;
+}
+
 .invalid {
     background-color: indianred;
     border-color: darkred;
 }
 
-.guess-close {
-    background-color: antiquewhite;
-    border-color: goldenrod
-}
-
-.guess-correct {
-    background-color: aquamarine;
-    border-color: forestgreen;
-}
-
 .hidden {
     visibility: hidden;
+}
+
+.info-message {
+    font-weight: bold;
+}
+
+.win-message {
+    color: forestgreen;
+}
+
+.lose-message {
+    color: darkred;
 }

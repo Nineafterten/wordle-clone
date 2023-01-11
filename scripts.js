@@ -3,7 +3,7 @@ const config = {
     answerLength: 5, 
     rounds: 6,
     letters: document.querySelectorAll('.box'),
-    loader: document.querySelector('.info-container')
+    loader: document.querySelector('.loader')
 };
 // the initial load method
 async function init() {
@@ -17,8 +17,10 @@ async function init() {
     handleLoadingDisplay(true);
     // fetch the word from the api
     const apiResult = await fetch('https://words.dev-apis.com/word-of-the-day');
-    const wordAnswer = await apiResult.json();
-    console.log('wordAnswer', wordAnswer);
+    const wordResponse = await apiResult.json();
+    const wordAnswer = wordResponse.word.toUpperCase();
+    console.log('wordResponse', wordResponse);
+    const wordParts = wordAnswer.split('');
     // stop the loading spinner after we get the response
     handleLoadingDisplay(false);
 
@@ -56,15 +58,21 @@ async function init() {
         // update the new box with the letter
         let index = currentRow * config.answerLength + currentGuess.length - 1;
         config.letters[index].innerText = letter;
+        console.log('currentGuess', currentGuess);
     }
 
-    // let the user know this word wasn't a real one (doesn't count)
-    function markInvalidWord() {
-        for (let i = 0; i < config.answerLength; i++) {
-            config.letters[currentRow * config.answerLength + i].classList.remove("invalid");
-            // long enough for the browser to update the DOM and re-add the class
-            setTimeout(() => config.letters[currentRow * config.answerLength + i].classList.add('invalid'), 0);
-          }
+    // create an array of letters so we can keep track of which letters will be
+    // used more than once (to avoid "close" styling on more than one)
+    function buildMap(array) {
+        const obj = {};
+        for (let i = 0; i < array.length; i++) {
+            if (obj[array[i]]) {
+                obj[array[i]]++;
+            } else {
+                obj[array[i]] = 1;
+            }
+        }
+        return obj;
     }
 
     // handle the backspace key when we need to delete a letter
@@ -75,18 +83,68 @@ async function init() {
     }
 
     // handle a letter guess for a box
-    function handleGuess() {
+    async function handleGuess() {
         // if the word is not filled out yet, don't do anything
         if (currentGuess.length !== config.answerLength) {
             return;
         }
         // turn on loading to do the check against the API
         handleLoadingDisplay(true);
-        // if it's a valid word, we can run validation checks to update the styling
-        if (isValidWord()) {
-
-        }
+        // if it's not a valid word we are done here
+        const checkResponse = await fetch('https://words.dev-apis.com/validate-word', {
+            method: 'POST',
+            body: JSON.stringify({ word: currentGuess })
+        });
+        const checkResult = await checkResponse.json();
+        //console.log('validWord', checkResult.validWord);
         handleLoadingDisplay(false);
+        let allCorrect;
+        // if a valid word, we can do styling for guesses
+        if (checkResult.validWord) {
+            allCorrect = true;
+            // start checking the guess
+            const guessLetters = currentGuess.split('');
+            const guessMap = buildMap(wordParts);
+            // first pass - find the correct letters
+            for (let i = 0; i < config.answerLength; i++) {
+                if (guessLetters[i] === wordParts[i]) {
+                    config.letters[currentRow * config.answerLength + i].classList.add('correct');
+                    guessMap[guessLetters[i]]--;
+                }
+            }
+            // second pass - find the close and wrong letters
+            for (let i = 0; i < config.answerLength; i++) {
+                let index = currentRow * config.answerLength + i;
+                if (guessLetters[i] === wordParts[i]) {
+                    // do nothing
+                } else if (guessMap[guessLetters[i]] && guessMap[guessLetters[i]] > 0) {
+                    allCorrect = false;
+                    config.letters[index].classList.add('close');
+                    guessMap[guessLetters[i]]--;
+                } else {
+                    allCorrect = false;
+                    config.letters[index].classList.add('wrong');
+                }
+            }
+        } else {
+             // if it's invalid, do the styling updates
+            for (let i = 0; i < config.answerLength; i++) {
+                config.letters[currentRow * config.answerLength + i].classList.add('invalid');
+            }
+        }
+        // next row, new guess
+        currentRow++;
+        currentGuess = '';
+        // the win/lose flow
+        if (allCorrect) {
+            document.querySelector('.info-message').innerText = `You win. Congrats!`;
+            document.querySelector('.info-message').classList.add('win-message');
+            finishedGame = true;
+        } else if (currentRow === config.rounds) {
+            document.querySelector('.info-message').innerText = `You lose. \n The word was ${ wordAnswer }.`;
+            document.querySelector('.info-message').classList.add('lose-message');
+            finishedGame = true;
+        }
     }
 
     // handle the hide/show of the loading message
@@ -98,21 +156,6 @@ async function init() {
     // check if the character is a letter and not something weird
     function isLetter(letter) {
         return /^[a-zA-Z]$/.test(letter);
-    }
-
-    // go check the word to see if it's valid
-    async function isValidWord() {
-        const checkResponse = await fetch('https://words.dev-apis.com/validate-word', {
-            method: 'POST',
-            body: JSON.stringify({ word: currentGuess })
-        });
-        const checkResult = await checkResponse.json();
-        console.log('validWord', checkResult.validWord);
-        // if it's invalid, do the styling updates
-        if (!checkResult.validWord) {
-            markInvalidWord();
-            return;
-        }
     }
 
 } 
