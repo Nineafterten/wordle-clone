@@ -28,6 +28,7 @@ async function init() {
     document.addEventListener('keydown', function handleKeyPress(event) {
         let character = event.key
         //console.info('handle this key:', character);
+        removeActiveCursorBox()
         // don't do anything if we are loading or if the game is done
         if (isLoading || finishedGame) {
             return;
@@ -47,6 +48,7 @@ async function init() {
         }
     });
     
+    
     // add the letter to the next open box
     function addLetter(letter) {
         // add the letter to the current guess string
@@ -58,15 +60,7 @@ async function init() {
         // update the new box with the letter
         let index = currentRow * config.answerLength + currentGuess.length - 1;
         config.letters[index].innerText = letter;
-        // update the "cursor box"
-        if (document.getElementsByClassName('pulse').length) {
-            document.getElementsByClassName('pulse')[0].classList.remove('pulse');
-        }
-        // TODO: make the 'backspace' and 'enter' keys respond better to where we "should be"
-        // TODO: make clear on "win/loss" states
-        if (document.getElementById('box-'+(index+1)).nextElementSibling) {
-            document.getElementById('box-'+(index+1)).nextElementSibling.classList.add('pulse');
-        }
+        addActiveCursorBox(index + 1);
     }
 
     // create an array of letters so we can keep track of which letters will be
@@ -83,11 +77,29 @@ async function init() {
         return obj;
     }
 
+    function addActiveCursorBox(index) {
+        if (document.getElementById('box-'+(index))) {
+            document.getElementById('box-'+(index)).classList.add('pulse');
+        }
+    }
+
+    function removeActiveCursorBox() {
+        if (document.getElementsByClassName('pulse').length) {
+            document.getElementsByClassName('pulse')[0].classList.remove('pulse');
+        }
+    }
+
     // handle the backspace key when we need to delete a letter
     function hanldleBackspaceKey() {
         let index = currentRow * config.answerLength + currentGuess.length;
         currentGuess = currentGuess.substring(0, currentGuess.length - 1);
-        config.letters[index].innerText = '';
+        // don't backspace up to a previous guess word
+        if (index && currentGuess.length) {
+            config.letters[index - 1].innerText = '';
+            addActiveCursorBox(index);
+        } else {
+            addActiveCursorBox(index + 1);
+        }
     }
 
     // handle a letter guess for a box
@@ -145,13 +157,17 @@ async function init() {
         currentGuess = '';
         // the win/lose flow
         if (allCorrect) {
+            removeActiveCursorBox();
             document.querySelector('.info-message').innerText = `You win. Congrats!`;
             document.querySelector('.info-message').classList.add('win-message');
             finishedGame = true;
         } else if (currentRow === config.rounds) {
+            removeActiveCursorBox();
             document.querySelector('.info-message').innerText = `You lose. \n The word was ${ wordAnswer }.`;
             document.querySelector('.info-message').classList.add('lose-message');
             finishedGame = true;
+        } else {
+            addActiveCursorBox(currentRow * 5 + 1);
         }
     }
 

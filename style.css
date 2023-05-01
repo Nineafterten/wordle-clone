@@ -1,7 +1,8 @@
 :root {
     --active-blue: #3498db;
     --dim-blue: rgb(140, 174, 204);
-    --neutral-blue: #b8d0e0;
+    --neutral-blue: #bcdbec;
+    --ice-blue: #a7cee2;
 }
 
 * {
@@ -10,7 +11,12 @@
 }
 
 .app {
-    background-color: #bcdbec;
+    background: linear-gradient(135deg, var(--neutral-blue) 25%, transparent 25%) -50px 0,
+      linear-gradient(225deg, var(--neutral-blue) 25%, transparent 25%) -50px 0,
+      linear-gradient(315deg, var(--neutral-blue) 25%, transparent 25%),
+      linear-gradient(45deg, var(--neutral-blue) 25%, transparent 25%);
+    background-size: 100px 100px;
+    background-color: var(--ice-blue);
 }
 
 .app-container {
@@ -20,12 +26,22 @@
     width: 330px;
     margin: 10vh auto;
     border: 16px solid var(--dim-blue);
+    border-radius: 10px;
 }
 
 .title {
     text-align: center;
     margin: auto;
     padding: 0;
+}
+
+.title .wordy {
+    color: var(--active-blue);
+    text-transform: uppercase;
+}
+
+.title .solver {
+    color: gray;
 }
 
 .info-container {
