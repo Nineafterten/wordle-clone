@@ -1,21 +1,25 @@
+:root {
+    --active-blue: #3498db;
+    --dim-blue: rgb(140, 174, 204);
+    --neutral-blue: #b8d0e0;
+}
+
 * {
     box-sizing: border-box;
     font-family: 'Roboto Slab', Arial, Helvetica, sans-serif;
 }
 
 .app {
-    /* used heropatterns.com for this css background */
-    background-color: #e2e9ed;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%237078aa' fill-opacity='0.4'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-color: #bcdbec;
 }
 
 .app-container {
     background-color: white;
     box-shadow: 2px 2px 2px gray;
-    padding: 20px;
-    width: 320px;
+    padding: 25px 20px;
+    width: 330px;
     margin: 10vh auto;
-    border: 6px solid rgb(140, 174, 204)
+    border: 16px solid var(--dim-blue);
 }
 
 .title {
@@ -31,7 +35,7 @@
 
 .loader {
     border: 5px solid #f3f3f3; 
-    border-top: 5px solid #3498db;
+    border-top: 5px solid var(--active-blue);
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -59,7 +63,7 @@
     width: 45px;
     font-size: 30px;
     text-transform: uppercase;
-    border: 3px solid #b8d0e0;
+    border: 3px solid var(--neutral-blue);
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -100,4 +104,28 @@
 
 .lose-message {
     color: darkred;
+}
+
+.pulse {
+	background: white;
+    border-color:  var(--active-blue);
+	animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+	0% {
+        border-color:  var(--dim-blue);
+	}
+
+	25% {
+        border-color:  var(--neutral-blue);
+	}
+
+	50% {
+        border-color:  var(--active-blue);
+	}
+
+	75% {
+        border-color:  var(--neutral-blue);
+	}
 }

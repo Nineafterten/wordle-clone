@@ -58,6 +58,15 @@ async function init() {
         // update the new box with the letter
         let index = currentRow * config.answerLength + currentGuess.length - 1;
         config.letters[index].innerText = letter;
+        // update the "cursor box"
+        if (document.getElementsByClassName('pulse').length) {
+            document.getElementsByClassName('pulse')[0].classList.remove('pulse');
+        }
+        // TODO: make the 'backspace' and 'enter' keys respond better to where we "should be"
+        // TODO: make clear on "win/loss" states
+        if (document.getElementById('box-'+(index+1)).nextElementSibling) {
+            document.getElementById('box-'+(index+1)).nextElementSibling.classList.add('pulse');
+        }
     }
 
     // create an array of letters so we can keep track of which letters will be
